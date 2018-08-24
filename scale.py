@@ -5,7 +5,7 @@ tmp = []
 
 
 # 获取自然音阶大调
-def get_natrual_major(root, pro) -> object:
+def get_natrual_major(root, pro):
     if root in musicNotes:
         # 获取当前元素的位置
         num = musicNotes.index(root)
@@ -121,7 +121,6 @@ def get_blues_minor(temp, pro, index):
     if temp:
         if pro.startswith("Blues-min"):
             num = musicNotes.index(temp[index])
-            print(musicNotes[(num + 1) % 12])
             temp.insert(num - 2, musicNotes[(num + 1) % 12])
             return temp
 
@@ -129,7 +128,7 @@ def get_blues_minor(temp, pro, index):
 if __name__ == '__main__':
     # s = Scale()
 
-    tmp = get_natrual_major('Ionian')
+    tmp = get_natrual_major('C', 'Ionian')
     print(tmp)
     tmp1 = get_pentatonic_major(get_pentatonic_major(tmp, 'Pentatonic-maj', 3), 'Pentatonic-maj', 5)
     print(tmp1)
