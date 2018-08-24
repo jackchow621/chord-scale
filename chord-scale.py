@@ -22,20 +22,20 @@ scale = ("Ionian(major)","Dorian","Phrygian","Lydian","Mixolydian","Aeolian(mino
          "Locrian","----------------","Pentatonic-maj","Pentatonic-min","Blues-major","Blues-minor")
 noteStyle = ("Letter","Arabic numeral")
 
-p_line = PhotoImage(file='./line.gif')
-p_line_dot = PhotoImage(file='./line-dot.gif')
-p_line_root = PhotoImage(file='./line-root.gif')
-p_line_0 = PhotoImage(file='./line-style3.gif')
-p_line_dot_0 = PhotoImage(file='./line-style3-dot.gif')
-p_line_root_0 = PhotoImage(file='./line-style3-root.gif')
-p_line_12f = PhotoImage(file='./line-style2.gif')
+p_line = PhotoImage(file='./resource/image/line.gif')
+p_line_dot = PhotoImage(file='./resource/image/line-dot.gif')
+p_line_root = PhotoImage(file='./resource/image/line-root.gif')
+p_line_0 = PhotoImage(file='./resource/image/line-style3.gif')
+p_line_dot_0 = PhotoImage(file='./resource/image/line-style3-dot.gif')
+p_line_root_0 = PhotoImage(file='./resource/image/line-style3-root.gif')
+p_line_12f = PhotoImage(file='./resource/image/line-style2.gif')
 
-p_style_up = PhotoImage(file='./line-style1-up.gif')
-p_style_up_dot = PhotoImage(file='./line-style1-up-dot.gif')
-p_style_up_root = PhotoImage(file='./line-style1-up-root.gif')
-p_style_down = PhotoImage(file='./line-style1-down.gif')
-p_style_down_dot = PhotoImage(file='./line-style1-down-dot.gif')
-p_style_down_root = PhotoImage(file='./line-style1-down-root.gif')
+p_style_up = PhotoImage(file='./resource/image/line-style1-up.gif')
+p_style_up_dot = PhotoImage(file='./resource/image/line-style1-up-dot.gif')
+p_style_up_root = PhotoImage(file='./resource/image/line-style1-up-root.gif')
+p_style_down = PhotoImage(file='./resource/image/line-style1-down.gif')
+p_style_down_dot = PhotoImage(file='./resource/image/line-style1-down-dot.gif')
+p_style_down_root = PhotoImage(file='./resource/image/line-style1-down-root.gif')
 
 line1=[node[4],]#1 string
 line2=[node[11],]#2 string
