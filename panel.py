@@ -13,7 +13,7 @@ noteStyle = ["Letter", "Arabic numeral"]
 
 
 # 面板类
-class Panel:
+class Panel():
     def __init__(self):
         root = Tk()
         root.title('chord-scale')
