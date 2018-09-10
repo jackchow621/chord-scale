@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QApplication, QPushButton, QHBoxLayout, QLabel, QLineEdit, \
-    QGraphicsView, QScrollArea, QFrame, QListWidget, QListWidgetItem, QGroupBox, QMessageBox
-from PyQt5.QtCore import pyqtSignal, QObject, Qt, QSize
-from PyQt5.QtGui import QPixmap, QMovie, QImage, QPalette, QColor
-import sys
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QScrollArea, QMessageBox, QLineEdit, QLabel
 from Network.TabSites.TabCrawler import *
-from Panel.widgets.ComboCheckBox import *
+from PyQt5.QtCore import Qt, QSize
+from Panel.widgets.ComboCheckBox import ComboCheckBox
+from Panel.widgets.LinkLabel import LinkLabel
+from Panel.widgets.PicScrool import PicScrool
+from Panel.widgets.PicViewer import PicViewer
+from Panel.widgets.TabList import TabList
 
-#吉他谱
+
 class GuitarTab(QWidget):
     sites = {'虫虫吉他': 'TabCcjt', '吉他谱': 'TabJtp'}
 
@@ -21,7 +22,7 @@ class GuitarTab(QWidget):
         qPalette.setColor(self.backgroundRole(), QColor(255, 255, 255))
         self.setPalette(qPalette)'''
         self.initUI()
-        #self.show()
+        # self.show()
 
     def initUI(self):
         # 查询条件区域
@@ -85,26 +86,18 @@ class GuitarTab(QWidget):
         self.vbox.addLayout(self.layout_content_h)
 
         # 图片区域
-        self.picViewer = picViewer()
+        self.picViewer = PicViewer()
 
         # 滚动条2
-        self.picScroll = QScrollArea()
+        self.picScroll = PicScrool()
         self.picScroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.picScroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.picScroll.setWidgetResizable(True)
         self.picScroll.setAutoFillBackground(True)
         self.picScroll.setWidget(self.picViewer)
+        self.picScroll.zoomSignal.connect(self.zoomPic)
 
         self.layout_content_pic_h.addWidget(self.picScroll)
-
-        self.zoomInBtn = QPushButton('放大')
-        self.zoomInBtn.clicked.connect(self.zoomIn)
-        self.layout_content_pic_h.addWidget(self.zoomInBtn)
-
-        self.zoomOutBtn = QPushButton('缩小')
-
-        self.zoomOutBtn.clicked.connect(self.zoomOut)
-        self.layout_content_pic_h.addWidget(self.zoomOutBtn)
 
         self.setLayout(self.vbox)
 
@@ -123,7 +116,7 @@ class GuitarTab(QWidget):
             if len(ls) > 0:
                 for l in ls:
                     try:
-                        a = linkLabel("<a style='color: green;' href = '" + l[1] + "'> " + l[0] + "</a>", l[0], l[1])
+                        a = LinkLabel("<a style='color: green;' href = '" + l[1] + "'> " + l[0] + "</a>", l[0], l[1])
                         a.currentLink.connect(self.viewImg)
                         self.tabList.addItem(a)
                     except Exception as ex:
@@ -139,110 +132,7 @@ class GuitarTab(QWidget):
         images = self.crawler.getPics(currentImg, currentUrl)
         self.picViewer.view(images)
 
-    def zoomIn(self):
+    def zoomPic(self, zoomIn=True):
         if len(self.picViewer.images) == 0:
             return
-        self.picViewer.zoomIn()
-
-    def zoomOut(self):
-        if len(self.picViewer.images) == 0:
-            return
-        self.picViewer.zoomOut()
-
-
-class TabList(QWidget):
-    items = []
-
-    def __init__(self):
-        super(QWidget, self).__init__()
-        self.initUI()
-
-    def initUI(self):
-        self.itemLayout = QVBoxLayout()
-        self.setLayout(self.itemLayout)
-
-    def addItem(self, linkLabel):
-        self.itemLayout.addWidget(linkLabel)
-        self.items.append(linkLabel)
-
-    def removeItem(self):
-        for item in self.items:
-            try:
-                self.itemLayout.removeWidget(item)
-                item.deleteLater()
-            except Exception as ex:
-                print(ex)
-        self.items = []
-        pass
-
-
-class linkLabel(QLabel, QObject):
-    currentLink = pyqtSignal(str, str)
-
-    def __init__(self, text, name, url):
-        super(linkLabel, self).__init__()
-        self.text = text
-        self.name = name
-        self.url = url
-        self.setText(self.text)
-        self.setToolTip(self.url)
-
-    def mousePressEvent(self, event):
-        self.currentLink.emit(self.name, self.url)
-
-
-class picViewer(QLabel, QWidget):
-    # currentImg = pyqtSignal(str)
-    images = []
-    currentImg = QImage()
-    index = 0
-
-    def __init__(self):
-        super(QWidget, self).__init__()
-
-    def view(self, images):
-        if len(images) == 0:
-            self.setPixmap(QPixmap(r'../resources/image/nonetab.bmp'))
-        else:
-            self.images = images
-            self.index = 0
-            self.currentImg = QPixmap(self.images[self.index])
-            self.setPixmap(self.currentImg)
-
-    def nextImg(self):
-        if len(self.images) == 0:
-            return
-        self.index = (self.index + 1) % len(self.images)
-        self.currentImg = QPixmap(self.images[self.index])
-        self.setPixmap(self.currentImg)
-
-    def mousePressEvent(self, event):
-        # self.currentImg.emit('hello')
-        print("点击：")
-        self.nextImg()
-
-    def keyPressEvent(self, QKeyEvent):
-        print("按下：" + str(QKeyEvent.key()))
-
-    def zoomIn(self):
-        print('zoom in')
-        try:
-            width = self.currentImg.width() * 3
-            height = self.currentImg.height() * 3
-            self.currentImg = QImage(self.images[self.index])
-            self.currentImg.scaled(width, height)
-            self.setScaledContents(True)
-            self.resize(width, height)
-            self.setPixmap(QPixmap.fromImage(self.currentImg))
-        except Exception as ex:
-            print(ex)
-
-    def zoomOut(self):
-        print('zoom out')
-
-'''
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = TabOnline()
-    sys.exit(app.exec_())
-'''
+        self.picViewer.zoomPic(zoomIn)

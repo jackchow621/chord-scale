@@ -74,7 +74,7 @@ class FretBoard(QWidget):
 
     def __init__(self, fretboardNum):
         super().__init__()
-        self.sd = sound()
+        self.sd = sound('GUITAR')
         self.fretboardNum = fretboardNum
         self.initUI()
 
@@ -117,7 +117,7 @@ class FretBoard(QWidget):
             for i in range(6):
                 for j in range(self.fretboardNum):
                     self.frets[i][j].setText(self.guitar.notes[i][j])
-                    self.frets[i][j].setImage('images/line-dot.gif')
+                    self.frets[i][j].setImage('images/line-dot.bmp')
         else:
             root = notes[0]
             for i in range(6):
@@ -145,7 +145,7 @@ class FretBoard(QWidget):
 class Fret(QPushButton):
     def __init__(self):
         super().__init__()
-        self.img = 'images/line.gif'
+        self.img = 'images/line.bmp'
         self.fontColor = 'black'
 
     def drawFret(self, parent):
@@ -183,11 +183,12 @@ class Fret(QPushButton):
 
     def setImage(self, fretType):
         if fretType == 0:
-            self.img = 'images/line.gif'
+            self.img = 'images/line.bmp'
             self.fontColor = 'grey'
         elif fretType == 1:
-            self.img = 'images/line-dot.gif'
+            self.img = 'images/line-dot.bmp'
             self.fontColor = 'black'
         else:
-            self.img = 'images/line-root.gif'
+            self.img = 'images/line-root.bmp'
             self.fontColor = 'white'
+        self.setStyleSheet("QPushButton {color: " + self.fontColor + "}")

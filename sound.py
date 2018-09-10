@@ -9,13 +9,22 @@ import sys
 class sound:
     global speed
     speed = 1.0
-    if not fluidsynth.init(r'D:\sa\p\chord-scale\resources\sound\Acoustic Guitars JNv2.4.sf2'):
-        print("Couldn't load soundfont")
-        sys.exit(1)
+
+    def __init__(self, soundType):
+        if soundType == 'PIANO':
+            str = r'C:\sounds\Acoustic Guitars JNv2.4.sf2'
+        elif soundType == 'GUITAR':
+            str = r'C:\sounds\Acoustic Guitars JNv2.4.sf2'
+        else:
+            print("unsupported sound")
+            sys.exit(1)
+        if not fluidsynth.init(str):
+            print("Couldn't load soundfont")
+            sys.exit(1)
 
     def playNote(self, noteStr):
         fluidsynth.play_Note(Note(noteStr))
-        print('play',noteStr)
+        print('play', noteStr)
         time.sleep(speed / 2)
 
     def playNotes(self, noteStrs):
@@ -33,12 +42,11 @@ class sound:
             fluidsynth.play_NoteContainer(NoteContainer(chordStr))
 
 
-
 '''s = sound()
 g = Guitar(15)
 for n in g.notes:
     print(n)
     s.playNotes(n)'''
 
-#s.playChord(['C-4','E-4','G-4'])
-#s.playChords([['C-4','E-4','G-4'],['F-4','A-4','C-5'],['G-4','B-4','D-2']])
+# s.playChord(['C-4','E-4','G-4'])
+# s.playChords([['C-4','E-4','G-4'],['F-4','A-4','C-5'],['G-4','B-4','D-2']])
