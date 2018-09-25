@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
-from Instrument.MusicInstrument import MusicInstrument
+from Instrument.MusicalInstrument import MusicalInstrument
 
 
-class GuitarInstrument(MusicInstrument):
-    notes = [[],[],[],[],[],[]]
+class GuitarInstrument(MusicalInstrument):
+    notes = [[], [], [], [], [], []]
 
-    def __init__(self, fretNum):
+    def __init__(self):
+        super().__init__()
+        self.sd.setInstrument(0, 24, 0)  # Nylon Guitar
         self.noteStyles = ("Letter", "Arabic numeral")
+
+    # generate notes on the both six string by the given fret number
+    def initFretBoard(self, fretNum):
+        self.notes = [[], [], [], [], [], []]
         self.fretNum = fretNum
         self.initString(1, 'E', 4)
         self.initString(2, 'B', 3)
@@ -15,7 +21,8 @@ class GuitarInstrument(MusicInstrument):
         self.initString(5, 'A', 2)
         self.initString(6, 'E', 2)
 
-    def initString(self, string, zeroNote, octave):
+    # generate notes on the specific string
+    def initString(self, stringIndex, zeroNote, octave):
         index = self.notesAll.index(zeroNote)
         notePerStr = []
         for i in range(self.fretNum):
@@ -24,10 +31,4 @@ class GuitarInstrument(MusicInstrument):
             if tmp == 'B':
                 octave = octave + 1
 
-        self.notes[string - 1] = notePerStr
-
-    def initFretBoard(self):
-        pass
-# g = Guitar(15)
-# print(g.notesAll)
-# print(g.notes)
+        self.notes[stringIndex - 1] = notePerStr

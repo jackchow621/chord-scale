@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
-from Instrument.MusicInstrument import MusicInstrument
-from sound import *
+import sys
+
+from Instrument.MusicalInstrument import MusicalInstrument
+from sounds.sound import *
 
 
-class PianoInstrument(MusicInstrument):
+class PianoInstrument(MusicalInstrument):
     notes = []
 
-    def __init__(self, oct):
+    def __init__(self):
+        super().__init__()
+        self.sd.setInstrument(0, 0, 0)  # Grand Piano
         self.noteStyles = ("Letter", "Arabic numeral")
-        self.sd = sound('PIANO')
-        self.initNote(oct)
 
-    def initNote(self, oct):
+    # generate notes off each octave
+    def initFretBoard(self, oct):
         self.notes = []
         self.oct = oct
         self.minOct = 4
@@ -32,9 +35,3 @@ class PianoInstrument(MusicInstrument):
             for j in range(12):
                 self.notes.append(self.notesAll[j].split('/')[0] + '-' + str(self.minOct))
             self.minOct = self.minOct + 1
-
-        #print(self.notes)
-
-
-'''for c in range(1, 8):
-    p = PianoInstrument(c)'''

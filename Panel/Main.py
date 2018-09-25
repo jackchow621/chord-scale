@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QApplication, QHBoxLayout, QComboBox, QVBoxLayout, QTabWidget
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QTabWidget
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import Qt
 import sys
-from Panel.GuitarPanel import GuitarPanel, Fret
-from Panel.PianoPanel import PianoPanel
 from Panel.GuitarTab import GuitarTab
+from Panel.InstrumentTab import InstrumentTab
 
 
 class Main(QWidget):
@@ -24,16 +22,12 @@ class Main(QWidget):
 
     def initUI(self):
         gt = GuitarTab()
-        gp = GuitarPanel()
-        pp = PianoPanel()
+        it = InstrumentTab()
         tabBox = QTabWidget()
         tabBox.addTab(gt, '在线吉他谱')
-        tabBox.addTab(gp, '吉他指板')
-        tabBox.addTab(pp, '钢琴指板')
-
+        tabBox.addTab(it, '乐器指板')
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(tabBox)
-
         self.setLayout(self.vbox)
 
 

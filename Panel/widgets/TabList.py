@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtCore import Qt
 
 
 class TabList(QWidget):
@@ -11,6 +12,8 @@ class TabList(QWidget):
 
     def initUI(self):
         self.itemLayout = QVBoxLayout()
+        self.itemLayout.setAlignment(Qt.AlignTop)
+        self.itemLayout.setSpacing(20)
         self.setLayout(self.itemLayout)
 
     def addItem(self, linkLabel):

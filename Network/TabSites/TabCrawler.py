@@ -8,7 +8,7 @@ from Network.TabSites.TabBase import *
 class TabCrawler(threading.Thread):
     tabCrawlers = []
     tabBase = None
-    rootFileLocate = r'D:/picstmp'
+    rootFileLocate = r'C:\picstmp'
 
     def __init__(self, sites):
         super(TabCrawler, self).__init__()

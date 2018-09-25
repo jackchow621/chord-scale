@@ -27,59 +27,59 @@ class GuitarTab(QWidget):
     def initUI(self):
         # 查询条件区域
         self.layout_condition_h = QHBoxLayout()
-        keyLabel = QLabel('关键字')
+        self.layout_condition_h.setAlignment(Qt.AlignLeft)
+        keyLabel = QLabel('关键字:')
         self.keyText = QLineEdit()
+        self.keyText.setPlaceholderText('请输入关键字')
+        # self.keyText.setFixedWidth(200)
         query = QPushButton('查询')
-        siteLabel = QLabel('吉他谱网站')
+        siteLabel = QLabel('吉他谱网站:')
         self.sitesCombo = ComboCheckBox(list(self.sites.keys()))
-        self.sitesCombo.setMinimumSize(QSize(400, 20))
+        # self.sitesCombo.setMinimumWidth(200)
         self.sitesCombo.selectAll(2)
         query.clicked.connect(self.query)
         reset = QPushButton('重置')
         reset.clicked.connect(self.reset)
-        self.layout_condition_h.addWidget(keyLabel)
-        self.layout_condition_h.addWidget(self.keyText)
+
         self.layout_condition_h.addWidget(siteLabel)
+        self.layout_condition_h.setStretch(0, 1)
         self.layout_condition_h.addWidget(self.sitesCombo)
+        self.layout_condition_h.setStretch(1, 3)
+        self.layout_condition_h.addWidget(keyLabel)
+        self.layout_condition_h.setStretch(2, 1)
+        self.layout_condition_h.addWidget(self.keyText)
+        self.layout_condition_h.setStretch(3, 6)
         self.layout_condition_h.addWidget(query)
+        self.layout_condition_h.setStretch(4, 1)
         self.layout_condition_h.addWidget(reset)
+        self.layout_condition_h.setStretch(5, 1)
+        self.layout_condition_h.addWidget(QWidget())
+        self.layout_condition_h.setStretch(6, 4)
 
         # 内容区域
         self.layout_content_h = QHBoxLayout()
+        self.layout_content_h.setAlignment(Qt.AlignCenter)
 
         # 内容区域-左-列表
-        self.tabArea = QWidget()
-        # self.tabArea.setMinimumSize(QSize(800, 800))
+        self.tabList = TabList()
 
-        self.tabList = TabList()  # console
-        # self.tabList.setMinimumSize(QSize(14000, 540))
-        # self.tabList.setTitle('查询结果')
-
-        # 滚动条
+        # 滚动条#
         self.scroll = QScrollArea()
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.scroll.setWidgetResizable(True)
         self.scroll.setAutoFillBackground(True)
         self.scroll.setWidget(self.tabList)
 
-        self.layout_content_list_v = QVBoxLayout()
-        self.layout_content_list_v.addWidget(self.scroll)
-        self.tabArea.setLayout(self.layout_content_list_v)
-
         # 内容区域-右-图像
         self.layout_content_pic_h = QHBoxLayout()
-        # key1Label = QLabel('result')
-        # self.layout_content_pic_h.addWidget(key1Label)
 
-        #
-        # self.layout_content_h.addStretch(15)
-        self.layout_content_h.addWidget(self.tabArea)
+        self.layout_content_h.addWidget(self.scroll)
         self.layout_content_h.setStretch(0, 1)
-        # self.layout_content_h.addStretch(15)
         self.layout_content_h.addLayout(self.layout_content_pic_h)
         self.layout_content_h.setStretch(1, 2)
 
         self.vbox = QVBoxLayout()
+        self.vbox.setAlignment(Qt.AlignLeft)
         self.vbox.setStretch(0, 1)
         self.vbox.addLayout(self.layout_condition_h)
         self.vbox.setStretch(1, 30)
@@ -88,12 +88,13 @@ class GuitarTab(QWidget):
         # 图片区域
         self.picViewer = PicViewer()
 
-        # 滚动条2
+        # 滚动条#
         self.picScroll = PicScrool()
         self.picScroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.picScroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.picScroll.setWidgetResizable(True)
         self.picScroll.setAutoFillBackground(True)
+        self.picScroll.setAlignment(Qt.AlignCenter)
         self.picScroll.setWidget(self.picViewer)
         self.picScroll.zoomSignal.connect(self.zoomPic)
 
@@ -128,7 +129,6 @@ class GuitarTab(QWidget):
         self.tabList.removeItem()
 
     def viewImg(self, currentImg, currentUrl):
-        print('click........', currentImg, '...', currentUrl)
         images = self.crawler.getPics(currentImg, currentUrl)
         self.picViewer.view(images)
 

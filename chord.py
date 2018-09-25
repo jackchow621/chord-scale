@@ -4,7 +4,7 @@ class chord():
     global musicNotes
     global tmp
     tmp = collections.OrderedDict()
-    musicNotes = ["C","#C","D","bE","E","F","#F","G","#G","A","bB","B"]
+    musicNotes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"]
     
     def getChord(self,root,pro,interval):
         if root in musicNotes:

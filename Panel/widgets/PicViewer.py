@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget,  QLabel
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QImage
+
 
 class PicViewer(QLabel, QWidget):
     images = []
@@ -13,15 +14,20 @@ class PicViewer(QLabel, QWidget):
         super(QWidget, self).__init__()
 
     def view(self, images):
+        self.scale = 0
         if len(images) == 0:
-            self.setPixmap(QPixmap(r'../resources/image/nonetab.bmp'))
+            self.setPixmap(QPixmap(r'images/nonetab.bmp'))
         else:
-            self.images = images
-            self.index = 0
-            self.currentImg = QPixmap(self.images[self.index])
-            self.setPixmap(self.currentImg)
+            try:
+                self.images = images
+                self.index = 0
+                self.currentImg = QPixmap(self.images[self.index])
+                self.setPixmap(self.currentImg)
+            except Exception as ex:
+                print(ex)
 
     def nextImg(self):
+        self.scale = 0
         if len(self.images) == 0:
             return
         self.index = (self.index + 1) % len(self.images)
@@ -29,18 +35,21 @@ class PicViewer(QLabel, QWidget):
         self.setPixmap(self.currentImg)
 
     def mousePressEvent(self, event):
-        # self.currentImg.emit('hello')
-        print("点击：")
         self.nextImg()
 
     def zoomPic(self, zoomIn):
         if zoomIn:
             width = self.currentImg.width() * 1.2
+            if (self.scale > 4):
+                return
             height = self.currentImg.height() * 1.2
+            self.scale = self.scale + 1
         else:
             width = self.currentImg.width() / 1.2
+            if (self.scale < -4):
+                return
             height = self.currentImg.height() / 1.2
-            print('zoom out')
+            self.scale = self.scale - 1
         try:
             self.currentImg = QImage(self.images[self.index])
             self.currentImg = self.currentImg.scaled(QSize(width, height), Qt.IgnoreAspectRatio)
