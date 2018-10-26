@@ -4,6 +4,7 @@ from mingus.containers import Note
 from sounds import myfluidsynth
 import time
 
+
 # 重要：font中，bank指的是0,128  ； preset指音色，如grand piano。可通过列出支持的bank或preset
 # >>fluidsynth.exe "c:\sounds\arachno-soundfont-10-sf2\Arachno SoundFont - Version 1.0.sf2"
 # >>inst 1
@@ -39,21 +40,21 @@ class sound():
         else:
             self.synth.noteon(channel, int(Note(note)) + 12, velocity)
 
-    def stopNote(self, note, channel=1):
+    def stopNote(self, note, channel=0):
         self.synth.noteoff(channel, int(Note(note)) + 12)
 
-    def playNoteContainer(self, nc, channel=1, velocity=100):
+    def playNoteContainer(self, nc, channel=0, velocity=100):
         for note in nc:
             self.playNote(note, channel, velocity)
 
-    def stopNoteContainer(self, nc, channel=1):
+    def stopNoteContainer(self, nc, channel=0):
         for note in nc:
             self.stopNote(note, channel)
 
-    def playBar(self, bar, channel=1, bpm=120):
+    def playBar(self, bar, channel=0, bpm=120, velocity=100):
         qn_length = 60.0 / bpm
         for nc in bar:
-            self.playNoteContainer(nc[2], channel, 100)
+            self.playNoteContainer(nc[2], channel, velocity)
             if hasattr(nc[2], 'bpm'):
                 bpm = nc[2].bpm
                 qn_length = 60.0 / bpm
@@ -62,12 +63,14 @@ class sound():
             self.stopNoteContainer(nc[2], channel)
         return {'bpm': bpm}
 
-    def playBars(self, bars, channels, bpm=120):
+    def playBars(self, bars, channels, velocitys=None, bpm=120):
         qn_length = 60.0 / bpm  # length of a quarter note
         tick = 0.0  # place in beat from 0.0 to bar.length
         cur = [0] * len(bars)  # keeps the index of the NoteContainer under
         # investigation in each of the bars
         playing = []  # The NoteContainers being played.
+        if velocitys == None:
+            velocitys = [100] * len(bars)
 
         while tick < bars[0].length:
             # Prepare a and play a list of NoteContainers that are ready for it.
@@ -77,7 +80,7 @@ class sound():
             for (n, x) in enumerate(cur):
                 (start_tick, note_length, nc) = bars[n][x]
                 if start_tick <= tick:
-                    self.playNoteContainer(nc, channels[n])
+                    self.playNoteContainer(nc, channels[n], velocitys[n])
                     playing_new.append([note_length, n])
                     playing.append([note_length, nc, channels[n], n])
 
@@ -130,37 +133,17 @@ class sound():
             playing.remove(p)
         return {'bpm': bpm}
 
-    def playTrack(self, track, channel=1, bpm=120):
+    def playTrack(self, track, channel=0, bpm=120, velocity=100):
         """Play a Track object."""
         for bar in track:
-            res = self.playBar(bar, channel, bpm)
+            res = self.playBar(bar, channel, bpm, velocity)
             if res != {}:
                 bpm = res['bpm']
             else:
                 return {}
         return {'bpm': bpm}
 
-    def playTracks(self, tracks, channels, programs=[], bpm=120):
-        """Play a list of Tracks.
-
-                If an instance of MidiInstrument is used then the instrument will be
-                set automatically.
-                """
-        # Set the right instruments
-        for x in range(len(tracks)):
-            '''instr = tracks[x].instrument
-            if isinstance(instr, MidiInstrument):
-                try:
-                    i = instr.names.index(instr.name)
-                except:
-                    i = 1
-                self.set_instrument(channels[x], i)
-            else:
-                self.set_instrument(channels[x], 1)'''
-            if len(programs) == 0:
-                self.setInstrument(channels[x], 0)
-            else:
-                self.setInstrument(channels[x], programs[x])
+    def playTracks(self, tracks, channels, velocitys=None, bpm=120):
         current_bar = 0
         max_bar = len(tracks[0])
 
@@ -168,8 +151,9 @@ class sound():
         while current_bar < max_bar:
             playbars = []
             for tr in tracks:
-                playbars.append(tr[current_bar])
-            res = self.playBars(playbars, channels, bpm)
+                if len(tr) != 0:
+                    playbars.append(tr[current_bar])
+            res = self.playBars(playbars, channels, velocitys, bpm)
             if res != {}:
                 bpm = res['bpm']
             else:
